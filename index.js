@@ -1,27 +1,36 @@
 'use strict';
 
-function getDogImg () {
-  fetch('https://dog.ceo/api/breeds/image/random/3')
+function getDogImg (inputValue) {
+  fetch(`https://dog.ceo/api/breeds/image/random/${inputValue}`)
     .then(response => response.json())
-    .then(responsejson => 
-      displayResults(responsejson))
+    .then(responseJson => displayResults(responseJson))
     .catch(error => alert('error occured'));
 }
 
-function displayResults(responsejson) {
-  console.log(responsejson);
-  $('.resultsImg').replaceWith(`<img src="${responsejson.message}" class='resultsImg'>`);
-  $('.results').removeClass('hidden');
+function displayResults(responseJson) {
+  console.log(responseJson);
+  let multiImg = responseJson.message;
+  let display = getImages(multiImg);
+  $('.resultsImg').html(display);
+}
+
+function getImages (multiImg) {
+  let value = '';
+  for (let i = 0; i < multiImg.length; i++) {
+    value += `<img src="${multiImg[i]}" class='resultsImg'>`; 
+  }
+  return value;
 }
 
 function watchForm () {
   $('form').submit(event => {
     event.preventDefault();
-    getDogImg();
+    let inputValue = $('.amount').val();
+    getDogImg(inputValue);
   });
 }
 
-$(function () {
+$(function() {
   console.log('App loaded! Waiting for submit!');
   watchForm();
 })
